@@ -37,6 +37,7 @@ This Ruby script converts CSV files exported from Tindie into a format compatibl
 ruby tindie2easypost.rb -i input_tindie_orders.csv -o output_easypost_orders.csv -f 'Your Name,Your Company,Your Phone,Your Email,Your Street,Unit/Suite,Your City,Your State,Your Zip,Your Country'
 ```
 
+
 ### Command-Line Arguments
 
 - `-i` or `--input`: Path to the input Tindie CSV file (required)
@@ -52,6 +53,10 @@ ruby tindie2easypost.rb -i input_tindie_orders.csv -o output_easypost_orders.csv
   8. State
   9. Zip/Postal Code
   10. Country
+- `-p` or `--package`: Package dimensions and weight, comma-separated (LENGTH,WIDTH,HEIGHT,WEIGHT)
+- `-d` or `--predefined`: Predefined package type
+
+Note: You must use either `-p` or `-d`, but not both.
 
 ### Example
 
@@ -59,11 +64,22 @@ ruby tindie2easypost.rb -i input_tindie_orders.csv -o output_easypost_orders.csv
 ruby tindie2easypost.rb -i december_orders.csv -o easypost_shipping.csv -f 'John Doe,Acme Widgets,555-123-4567,john@example.com,123 Business St,Suite 100,Anytown,CA,90210,USA'
 ```
 
+With package dimensions
+```bash
+ruby tindie2easypost.rb -i december_orders.csv -o easypost_shipping.csv -f 'John Doe,Acme Widgets,555-123-4567,john@example.com,123 Business St,Suite 100,Anytown,CA,90210,USA' -p 10,8,6,16
+```
+
+With predefined package type
+```bash
+ruby tindie2easypost.rb -i december_orders.csv -o easypost_shipping.csv -f 'John Doe,Acme Widgets,555-123-4567,john@example.com,123 Business St,Suite 100,Anytown,CA,90210,USA' -d "SmallFlatRateBox"
+```
+
 ## Limitations
 
 - Parcel details (weight, dimensions) are not automatically populated
 - Carrier information is not automatically filled
 - Assumes a consistent sender address for all orders
+- Assumes user wants `USPS GroundAdvantage` Service
 
 ## Customization
 

@@ -4,17 +4,16 @@ require 'csv'
 require 'optparse'
 
 class Tindie2EasyPost
-  def initialize(input_file, output_file, from_address)
+  def initialize(input_file, output_file, from_address, package_params)
     @input_file = input_file
     @output_file = output_file
     @from_address = from_address
+    @package_params = package_params
   end
 
   def convert
-    # Read Tindie CSV
     tindie_data = CSV.read(@input_file, headers: true)
 
-    # Prepare EasyPost CSV headers
     easypost_headers = [
       'to_address.name', 'to_address.company', 'to_address.phone', 'to_address.email',
       'to_address.street1', 'to_address.street2', 'to_address.city', 'to_address.state', 
@@ -26,50 +25,23 @@ class Tindie2EasyPost
       'parcel.predefined_package', 'carrier', 'service'
     ]
 
-    # Write EasyPost CSV
     CSV.open(@output_file, 'w') do |csv|
       csv << easypost_headers
 
-      # Predefined from address values
       from_address_values = [
-        @from_address[:name],
-        @from_address[:company],
-        @from_address[:phone],
-        @from_address[:email],
-        @from_address[:street1],
-        @from_address[:street2] || '',
-        @from_address[:city],
-        @from_address[:state],
-        @from_address[:zip],
-        @from_address[:country],
+        @from_address[:name], @from_address[:company], @from_address[:phone], @from_address[:email],
+        @from_address[:street1], @from_address[:street2] || '', @from_address[:city], @from_address[:state],
+        @from_address[:zip], @from_address[:country],
       ]
 
       tindie_data.each do |row|
-        # Map Tindie data to EasyPost format
         easypost_row = [
-          # To Address
-          "#{row['First Name']} #{row['Last Name']}",
-          row['Company'],
-          row['Phone'],
-          row['Email'],
-          row['Street'],
-          '',
-          row['City'],
-          row['State/Province'],
-          row['Postal/Zip Code'],
-          row['Country'],
-
-          # From Address (using predefined values)
+          "#{row['First Name']} #{row['Last Name']}", row['Company'], row['Phone'], row['Email'],
+          row['Street'], '', row['City'], row['State/Province'], row['Postal/Zip Code'], row['Country'],
           *from_address_values,
-
-          # Parcel details (you'll need to customize these)
-          '',  # parcel.length
-          '',  # parcel.width
-          '',  # parcel.height
-          '',  # parcel.weight
-          '',  # parcel.predefined_package
-          'USPS',  # carrier
-          'Ground Advantage'  # service
+          @package_params[:length], @package_params[:width], @package_params[:height], @package_params[:weight],
+          @package_params[:predefined_package],
+          'USPS', 'GroundAdvantage'
         ]
 
         csv << easypost_row
@@ -80,7 +52,6 @@ class Tindie2EasyPost
   end
 end
 
-# Command-line argument parsing
 options = {}
 OptionParser.new do |opts|
   opts.banner = "Usage: tindie2easypost.rb [options]"
@@ -95,31 +66,37 @@ OptionParser.new do |opts|
 
   opts.on("-f", "--from NAME,COMPANY,PHONE,EMAIL,STREET1,STREET2,CITY,STATE,ZIP,COUNTRY", Array, "From Address Details") do |from_details|
     options[:from_address] = {
-      name: from_details[0],
-      company: from_details[1],
-      phone: from_details[2],
-      email: from_details[3],
-      street1: from_details[4],
-      street2: from_details[5],
-      city: from_details[6],
-      state: from_details[7],
-      zip: from_details[8],
-      country: from_details[9]
+      name: from_details[0], company: from_details[1], phone: from_details[2], email: from_details[3],
+      street1: from_details[4], street2: from_details[5], city: from_details[6], state: from_details[7],
+      zip: from_details[8], country: from_details[9]
+    }
+  end
+
+  opts.on("-p", "--package LENGTH,WIDTH,HEIGHT,WEIGHT", Array, "Package dimensions and weight") do |package|
+    options[:package_params] = {
+      length: package[0], width: package[1], height: package[2], weight: package[3],
+      predefined_package: ''
+    }
+  end
+
+  opts.on("-d", "--predefined PACKAGE", "Predefined package type") do |predefined|
+    options[:package_params] = {
+      length: '', width: '', height: '', weight: '',
+      predefined_package: predefined
     }
   end
 end.parse!
 
-# Validate required arguments
-unless options[:input] && options[:output] && options[:from_address]
+unless options[:input] && options[:output] && options[:from_address] && (options[:package_params])
   puts "Error: Missing required arguments"
-  puts "Usage: ruby tindie2easypost.rb -i input.csv -o output.csv -f 'Your Name,Your Company,Phone,Email,Street1,Street2,City,State,Zip,Country'"
+  puts "Usage: ruby tindie2easypost.rb -i input.csv -o output.csv -f 'Name,Company,Phone,Email,Street1,Street2,City,State,Zip,Country' (-p LENGTH,WIDTH,HEIGHT,WEIGHT | -d PREDEFINED_PACKAGE)"
   exit 1
 end
 
-# Run conversion
 converter = Tindie2EasyPost.new(
   options[:input], 
   options[:output], 
-  options[:from_address]
+  options[:from_address],
+  options[:package_params]
 )
 converter.convert
