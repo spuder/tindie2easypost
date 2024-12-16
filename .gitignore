@@ -1,1 +1,70 @@
-*.csv
+# Ruby gem-specific ignores
+
+# Gem build artifacts
+*.gem
+*.rbc
+
+# Bundler-specific files
+.bundle/
+vendor/bundle
+Gemfile.lock
+
+# RVM/rbenv version files
+.ruby-version
+.ruby-gemset
+
+# Development and temporary files
+tmp/
+log/
+pkg/
+
+# IDE-specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Logs and databases
+*.log
+*.sqlite
+
+# Environment files (potentially containing sensitive information)
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+.csv

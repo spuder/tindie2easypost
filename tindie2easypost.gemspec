@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir.glob(['lib/**/*.rb', 'bin/*', 'README.md'])
   
   # Specify the executable script
-  spec.executables = ['tindie2easypost']
+  spec.executables = ['tindie2easypost.rb']
   
   # Specify the location of the executable in the gem structure
   spec.bindir      = 'bin'
