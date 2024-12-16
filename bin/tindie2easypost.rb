@@ -32,32 +32,32 @@ class Tindie2EasyPost
 
       # Predefined from address values
       from_address_values = [
-        @from_address[:name],                       # from_address.name
-        @from_address[:company],                    # from_address.company
-        @from_address[:phone],                      # from_address.phone
-        @from_address[:email],                      # from_address.email
-        @from_address[:street1],                    # from_address.street1
-        @from_address[:street2] || '',              # from_address.street2
-        @from_address[:city],                       # from_address.city
-        @from_address[:state],                      # from_address.state
-        @from_address[:zip],                        # from_address.zip
-        @from_address[:country],                    # from_address.country
+        @from_address[:name],
+        @from_address[:company],
+        @from_address[:phone],
+        @from_address[:email],
+        @from_address[:street1],
+        @from_address[:street2] || '',
+        @from_address[:city],
+        @from_address[:state],
+        @from_address[:zip],
+        @from_address[:country],
       ]
 
       tindie_data.each do |row|
         # Map Tindie data to EasyPost format
         easypost_row = [
           # To Address
-          "#{row['First Name']} #{row['Last Name']}",  # to_address.name
-          row['Company'],                             # to_address.company
-          row['Phone'],                               # to_address.phone
-          row['Email'],                               # to_address.email
-          row['Street'],                              # to_address.street1
-          '',                                         # to_address.street2 (empty if not in Tindie)
-          row['City'],                                # to_address.city
-          row['State/Province'],                      # to_address.state
-          row['Postal/Zip Code'],                     # to_address.zip
-          row['Country'],                             # to_address.country
+          "#{row['First Name']} #{row['Last Name']}",
+          row['Company'],
+          row['Phone'],
+          row['Email'],
+          row['Street'],
+          '',
+          row['City'],
+          row['State/Province'],
+          row['Postal/Zip Code'],
+          row['Country'],
 
           # From Address (using predefined values)
           *from_address_values,
@@ -68,8 +68,8 @@ class Tindie2EasyPost
           '',  # parcel.height
           '',  # parcel.weight
           '',  # parcel.predefined_package
-          '',  # carrier
-          row['Shipping Method']  # service
+          'USPS',  # carrier
+          'Ground Advantage'  # service
         ]
 
         csv << easypost_row
